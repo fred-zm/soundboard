@@ -41,13 +41,15 @@ open_button = ttk.Button(
     text='Open a File',
     command=datei_oeffnen)
 open_button.pack()
-
+jingle1 = ttk.Button(text='Song1🎶', width=20, padding=50)
 play_button = tk.Button(text="Play")
+
 play_button.pack()
 
+jingle1.pack(side='left')
 end_button = tk.Button(text="Beenden", command=datei_beenden)
 end_button.pack()
-
+print(jingle1.keys())
 
 
 # GUI starten
