@@ -1,17 +1,24 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
+from tkinter import ttk
 
+# Hauptfenster erstellen
+
+fenster = tk.Tk()
+fenster.title("Soundboard")
+fenster.geometry("600x300")
+
+# Menü
 
 def datei_oeffnen():
-    messagebox.showinfo('Viel Spaß jetzt öffnen.')
+    mb.showinfo("Öffnen")
     filetypes = (
-    ('text files', '*.txt'),
-    ('All files', '*.*')
+        ('text files', '*.txt'),
+        ('All files', '*.*')
     )
-    
+
     filename = fd.askopenfilename(
         title='Open a file',
         initialdir='/',
@@ -22,34 +29,26 @@ def datei_oeffnen():
         message=filename
     )
 
-
 def datei_speichern():
-    messagebox.showinfo('Speichern')
+    mb.showinfo("Speichern")
 
 def datei_beenden():
     fenster.quit()
 
-# Hauptfenster erstellen
 
-fenster = tk.Tk()
-fenster.title("Soundboard")
-fenster.geometry("600x300")
-
-
-#button herstellen
-button_open = tk.Button(text="Play")
-button_end = tk.Button(text='Beenden', command=datei_beenden)
 open_button = ttk.Button(
     fenster,
     text='Open a File',
-    command=datei_oeffnen
-)
-#menü
-
-
+    command=datei_oeffnen)
 open_button.pack()
-button_open.pack()
-button_end.pack()
+
+play_button = tk.Button(text="Play")
+play_button.pack()
+
+end_button = tk.Button(text="Beenden", command=datei_beenden)
+end_button.pack()
+
+
 
 # GUI starten
 fenster.mainloop()
