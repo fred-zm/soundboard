@@ -11,7 +11,7 @@ fenster.title("Soundboard")
 fenster.geometry("600x300")
 
 # Menü
-
+#datei öffnen und Pfad ansprechen
 def datei_oeffnen():
     mb.showinfo("Öffnen")
     filetypes = (
@@ -28,13 +28,14 @@ def datei_oeffnen():
         title='Selected File',
         message=filename
     )
-
+#noch ungenutzt
 def datei_speichern():
     mb.showinfo("Speichern")
 
+#beendet das Programm 
 def datei_beenden():
     fenster.quit()
-
+#zwei listen die wir brauchen
 button_list = []
 text_variable = ['sound1', 'sound2', 'sound3', 'sound4']
 
@@ -56,7 +57,7 @@ jingle1.pack(side='left')
 end_button = tk.Button(text="Beenden", command=datei_beenden)
 end_button.pack()
 print(jingle1.keys())
-
+ 
 
 # GUI starten
 fenster.mainloop()
