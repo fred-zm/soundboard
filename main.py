@@ -14,7 +14,8 @@ def datei_oeffnen():
     mb.showinfo("Öffnen")
     filetypes = (('text files', '*.txt'), ('All files', '*.*'))
     filename = fd.askopenfilename(title='Open a file', initialdir='/', filetypes=filetypes)
-    showinfo(title='Selected File', message=filename)
+    if filename:
+        showinfo(title='Selected File', message=filename)
 
 # Button zur Dateiöffnen Funktion
 open_button = ttk.Button(fenster, text='Open a File', command=datei_oeffnen)
