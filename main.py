@@ -48,15 +48,15 @@ jingle1 = ttk.Button(fenster, text='Song1🎶', width=20, padding=50)
 play_button = tk.Button(fenster, text="Play")
 
 play_button.pack()
-for word in text_variable:
-    button2 = ttk.Button(text=word)
+for i in text_variable:
+    button2 = ttk.Button(text=i)
     button2.pack(side='left', expand=True)#wollen wir das nebeneinander haben ?
     button_list.append(button2)
 
 jingle1.pack(side='left')
 end_button = tk.Button(text="Beenden", command=datei_beenden)
 end_button.pack()
-print(jingle1.keys())
+print(button2.keys())
  
 
 # GUI starten
