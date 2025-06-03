@@ -1,7 +1,6 @@
-import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
-from tkinter.messagebox import showinfo
 
 
 
@@ -19,7 +18,7 @@ def datei_oeffnen():
         initialdir='/',
         filetypes=filetypes)
 
-    showinfo(
+    mb.showinfo(
         title='Selected File',
         message=filename
     )
@@ -30,3 +29,13 @@ def datei_speichern():
 #beendet das Programm 
 def datei_beenden(fenster):
     fenster.quit()
+
+
+#for schleife die i immer weider ersetzt mit der liste//append speichert den button für zukunft 
+def buttons_erzeugen(master, texte):
+    buttons = []
+    for i in texte:
+        button = ttk.Button(master, text=i)
+        button.pack(side='top', anchor='w', padx=10, pady=5)
+        buttons.append(button)
+    return buttons
