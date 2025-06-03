@@ -7,4 +7,4 @@ fenster.title("Soundboard")
 fenster.geometry("600x300")
 
 # GUI starten
-fenster.mainloop()
+fenster.mainloop() 
