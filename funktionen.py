@@ -28,5 +28,5 @@ def datei_speichern():
     mb.showinfo("Speichern")
 
 #beendet das Programm 
-def datei_beenden(fenster: tk.Tk):
+def datei_beenden(fenster):
     fenster.quit()

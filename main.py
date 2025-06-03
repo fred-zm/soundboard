@@ -1,4 +1,5 @@
 import tkinter as tk
+from funktionen import datei_beenden, datei_oeffnen, datei_speichern 
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
@@ -11,30 +12,8 @@ fenster.title("Soundboard")
 fenster.geometry("600x300")
 
 # Menü
-#datei öffnen und Pfad ansprechen
-def datei_oeffnen():
-    mb.showinfo("Öffnen")
-    filetypes = (
-        ('text files', '*.txt'),
-        ('All files', '*.*')
-    )
 
-    filename = fd.askopenfilename(
-        title='Open a file',
-        initialdir='/',
-        filetypes=filetypes)
 
-    showinfo(
-        title='Selected File',
-        message=filename
-    )
-#noch ungenutzt
-def datei_speichern():
-    mb.showinfo("Speichern")
-
-#beendet das Programm 
-def datei_beenden():
-    fenster.quit()
 #zwei listen die wir brauchen
 button_list = []
 text_variable = ['sound1', 'sound2', 'sound3', 'sound4']
