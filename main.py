@@ -10,7 +10,8 @@ fenster = tk.Tk()
 fenster.title("Soundboard")
 fenster.geometry("600x300")
 
-# Menü
+
+# Menü Funktionen für Text Dateien
 
 def datei_oeffnen():
     mb.showinfo("Öffnen")
