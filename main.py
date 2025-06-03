@@ -5,8 +5,9 @@ import tkinter as tk
 fenster = tk.Tk()
 fenster.title("Soundboard")
 fenster.geometry("600x300")
-button1 = tk.Button(fenster)
-button1.pack()
+
+testbutton = tk.Button(text="test")
+testbutton.grid(column=1, row=1)
 
 # GUI starten
 fenster.mainloop()
