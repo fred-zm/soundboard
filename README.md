@@ -1,2 +1,5 @@
 # soundboard
-hallo neu 2
+    main.py
+    gui.py
+    logic.py
+    widgets.py
