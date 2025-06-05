@@ -1,2 +1,7 @@
-# soundboard
-hallo neu 2
+Soundboard v0.1
+
+Vorraussetzungen:
+
+pygame - pip install pygame
+
+have fun !
