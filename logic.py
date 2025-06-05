@@ -52,7 +52,7 @@ def add_sound(frame, style):
 
     filename = fd.askopenfilename(
         title='Sound hinzufügen',
-        initialdir='/',
+        initialdir='./sounds',
         filetypes=filetypes
     )
 
