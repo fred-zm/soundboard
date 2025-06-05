@@ -21,6 +21,7 @@ def build_gui():
 
     # Frames für Layout
     top_frame = ttk.Frame(window)
+
     top_frame.grid(row=0, column=0, sticky="nsew")
     top_frame.grid_rowconfigure(0, weight=1)
     top_frame.grid_columnconfigure(0, weight=1)
@@ -66,6 +67,7 @@ def build_gui():
 
     # Styles
     style = ttk.Style()
+
     style.configure("TButton", font=("Arial", 10))
     style.configure(
         "Selected.TButton",
