@@ -52,16 +52,16 @@ def build_gui():
 
     # Styles
     style = ttk.Style()
-    style.configure('TButton', font=('Arial', 10))
-    style.configure('Selected.TButton', font=('Arial', 10, 'bold'), background='#aee', padding=(20, 20))
+    style.configure('TButton', font=('Arial', 10), padding=(20, 20))
+    style.configure('Selected.TButton', font=('Arial', 10, 'bold'), background='#aee', width=15, padding=(20, 20))
 
     # Soundsteuerung (rechter Bereich)
-    ttk.Button(right_frame, text="▶️ abspielen", command=logic_scroll.play_sound).pack(pady=2)
-    ttk.Button(right_frame, text="⏹️ stoppen", command=logic_scroll.stop_sound).pack(pady=2)
-    ttk.Button(right_frame, text="🗑️ Sound entfernen", command=lambda: logic_scroll.remove_selected_sound(scrollable_frame)).pack(pady=8)
+    ttk.Button(bottom_frame, text="▶️ abspielen", command=logic_scroll.play_sound, width=20, padding=(20, 20)).pack()
+    ttk.Button(bottom_frame, text="⏹️ stoppen", command=logic_scroll.stop_sound, width=20, padding=(20, 20)).pack()
+    ttk.Button(bottom_frame, text="🗑️ Sound entfernen", command=lambda: logic_scroll.remove_selected_sound(scrollable_frame), width=20, padding=(20, 20)).pack()
 
     # Lautstärkeregler
-    volume_slider = tk.Scale(right_frame, from_=0, to=100, orient=tk.HORIZONTAL,
+    volume_slider = tk.Scale(bottom_frame, from_=0, to=100, orient=tk.HORIZONTAL,
                              label="Lautstärke", command=logic_scroll.set_volume)
     volume_slider.set(70)
     logic_scroll.set_volume(70)
