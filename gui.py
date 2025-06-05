@@ -14,6 +14,7 @@ def build_gui():
     menubar.add_cascade(label="Datei", menu=file_menu)
 
     file_menu.add_command(label="📂 Sound hinzufügen", command=lambda: logic.add_sound(left_frame, 'TButton'))
+    file_menu.add_command(label="Sound entfernen", command=lambda: logic.update_sound(left_frame))
     file_menu.add_separator()
     file_menu.add_command(label="❌ Beenden", command=lambda: logic.quit_program(window))
 
