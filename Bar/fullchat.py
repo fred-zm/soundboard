@@ -2,14 +2,15 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mb, filedialog as fd
 from tkinter.messagebox import showinfo
+from PIL import Image, ImageTk
 import pygame
 import os
 import threading
 import time
 
 # Farben definieren
-BG_COLOR = "#f0f0f0"  # Fensterhintergrund
-BTN_COLOR = "#06f5e9" # Buttonfarbe
+BG_COLOR = "#f0f0f0"
+BTN_COLOR = "#06f5e9"
 
 # Pygame initialisieren
 pygame.mixer.init()
@@ -17,17 +18,27 @@ pygame.mixer.init()
 # Fenster
 fenster = tk.Tk()
 fenster.title("Soundboard")
-fenster.geometry("600x300")
-fenster.configure(bg=BG_COLOR)  # Fensterhintergrund setzen
+fenster.geometry("600x700")
+fenster.resizable(False, False)
 
-# Info-Text hinzufügen
+# Canvas als Hintergrund
+canvas = tk.Canvas(fenster, width=600, height=700, highlightthickness=0)
+canvas.pack(fill="both", expand=True)
+
+# Hintergrundbild laden und auf Canvas zeichnen
+bg_image = Image.open("bar/serainfullsuit.jpg").resize((600, 700), Image.LANCZOS)
+bg_photo = ImageTk.PhotoImage(bg_image)
+canvas.bg_photo = bg_photo  # Referenz speichern!
+canvas.create_image(0, 0, image=bg_photo, anchor="nw")
+
+# Info-Text
 info_label = ttk.Label(
-    fenster,
+    canvas,
     text="Linksklick: Sound abspielen   |   Rechtsklick: Sound zuweisen",
     foreground="gray",
-    background=BG_COLOR
+    background="#ffffff"
 )
-info_label.pack(pady=(8, 0))
+canvas.create_window(300, 30, window=info_label)
 
 # Globale Variablen
 text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04']
@@ -53,7 +64,6 @@ loop_var = tk.BooleanVar(value=False)
 
 # Funktion: Sound abspielen
 def button_sound_abspielen(name):
-    # Wenn gerade ein Sound läuft, stoppen
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.stop()
         return
@@ -70,29 +80,63 @@ def button_sound_abspielen(name):
 
 # Lautstärke-Callback
 def lautstaerke_setzen(val):
-    volume = float(val) / 100  # Wert von 0.0 bis 1.0
+    volume = float(val) / 100
     pygame.mixer.music.set_volume(volume)
     lautstaerke_wert_label.config(text=f"{int(float(val))} %")
 
-# Lautstärkeregler hinzufügen
-lautstaerke_label = ttk.Label(fenster, text="Lautstärke", background=BG_COLOR)
-lautstaerke_label.pack(pady=(10,0))
+# Style anpassen
+style = ttk.Style()
+style.theme_use('clam')
+style.configure('TButton',
+    padding=6,
+    relief='flat',
+    background=BTN_COLOR,
+    foreground="black",
+    borderwidth=0,
+    focusthickness=0,
+    focuscolor='none'
+)
+style.map('TButton', background=[('active', '#04c4d6'), ('pressed', '#02a3b0')])
+style.configure("BG.TFrame", background=BG_COLOR)
+style.configure("Custom.TCheckbutton", background=BG_COLOR)
 
-lautstaerke_frame = ttk.Frame(fenster, style="BG.TFrame")
-lautstaerke_frame.pack(fill='x', padx=20)
+# Sound-Buttons (zentriert)
+sound_button_frame = ttk.Frame(canvas, style="BG.TFrame")
+canvas.create_window(300, 100, window=sound_button_frame)
+for name in text_variable:
+    btn = ttk.Button(sound_button_frame, text=name, style='TButton')
+    btn.pack(side='left', expand=True, padx=8, pady=8)
+    btn.config(command=lambda name=name: button_sound_abspielen(name))
+    btn.bind("<Button-3>", lambda event, name=name: sound_datei_zuteilen(name))
+    button_list.append(btn)
+
+# Lautstärkeregler und Wert darunter
+lautstaerke_label = ttk.Label(canvas, text="Lautstärke", background=BG_COLOR)
+canvas.create_window(300, 180, window=lautstaerke_label)
+
+lautstaerke_frame = ttk.Frame(canvas, style="BG.TFrame")
+canvas.create_window(300, 210, window=lautstaerke_frame)
 
 lautstaerke_regler = ttk.Scale(
     lautstaerke_frame, from_=0, to=100, orient='horizontal',
     command=lautstaerke_setzen
 )
-lautstaerke_regler.set(50)  # Standard: 50%
+lautstaerke_regler.set(50)
 lautstaerke_regler.pack(fill='x', expand=True)
 
-# Das Label für den Wert UNTER den Regler setzen:
-lautstaerke_wert_label = ttk.Label(fenster, text="50 %", background=BG_COLOR)
-lautstaerke_wert_label.pack(pady=(0,10))
+lautstaerke_wert_label = ttk.Label(canvas, text="50 %", background=BG_COLOR)
+canvas.create_window(300, 240, window=lautstaerke_wert_label)
 
-# Beenden
+# Checkbox für Loop-Modus
+loop_checkbox = ttk.Checkbutton(
+    canvas, text="Loop (Sound wiederholen)", variable=loop_var, style="Custom.TCheckbutton"
+)
+canvas.create_window(300, 270, window=loop_checkbox)
+
+# Button-Frame für die unteren Buttons
+button_frame = ttk.Frame(canvas, style="BG.TFrame")
+canvas.create_window(300, 650, window=button_frame)
+
 def datei_beenden():
     pygame.mixer.quit()
     fenster.quit()
@@ -111,52 +155,7 @@ def alle_abspielen():
                     showinfo("Fehler", f"Konnte Sound nicht abspielen:\n{e}")
     threading.Thread(target=play_all, daemon=True).start()
 
-def sound_cancel():
-    pygame.mixer.music.stop()
-    showinfo("Abgebrochen", "Sound wurde gestoppt.")
-
-# Frame für die Sound-Buttons oben
-sound_button_frame = ttk.Frame(fenster, style="BG.TFrame")
-sound_button_frame.pack(side='top', fill='x', pady=10)
-
-# Style anpassen
-style = ttk.Style()
-style.theme_use('clam')
-style.configure('TButton',
-    padding=6,
-    relief='flat',
-    background=BTN_COLOR,
-    foreground="black",
-    borderwidth=0,
-    focusthickness=0,
-    focuscolor='none'
-)
-style.map('TButton', background=[('active', '#04c4d6'), ('pressed', '#02a3b0')])
-style.configure("BG.TFrame", background=BG_COLOR)
-
-# Style für Checkbutton anpassen
-style.configure("Custom.TCheckbutton", background=BG_COLOR)
-
-# Dynamische Buttons mit Linksklick (Play) und Rechtsklick (Zuweisen)
-for name in text_variable:
-    btn = ttk.Button(sound_button_frame, text=name, style='TButton')
-    btn.pack(side='left', expand=True, padx=8, pady=8)
-    btn.config(command=lambda name=name: button_sound_abspielen(name))
-    btn.bind("<Button-3>", lambda event, name=name: sound_datei_zuteilen(name))
-    button_list.append(btn)
-
-# Button-Frame für die unteren Buttons
-button_frame = ttk.Frame(fenster, style="BG.TFrame")
-button_frame.pack(side='bottom', fill='x', pady=10)
-
 ttk.Button(button_frame, text='Alle abspielen', command=alle_abspielen, style='TButton').pack(side='left', expand=True, padx=20)
 ttk.Button(button_frame, text='Beenden', command=datei_beenden, style='TButton').pack(side='left', expand=True, padx=20)
 
-# Checkbox für Loop-Modus
-loop_checkbox = ttk.Checkbutton(
-    fenster, text="Loop (Sound wiederholen)", variable=loop_var, style="Custom.TCheckbutton"
-)
-loop_checkbox.pack(pady=(0, 10))
-
-# GUI starten
 fenster.mainloop()
