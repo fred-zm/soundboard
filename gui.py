@@ -13,8 +13,8 @@ def build_gui():
     file_menu = tk.Menu(menubar, tearoff=0)
     menubar.add_cascade(label="Datei", menu=file_menu)
 
-    file_menu.add_command(label="📂 Sound hinzufügen", command=lambda: logic.add_sound(left_frame, 'TButton'))
-    file_menu.add_command(label="🗑️ Sound entfernen", command=lambda: logic.update_sound(left_frame))
+    file_menu.add_command(label="📂 Sound hinzufügen", command=lambda: logic.add_sound(top_frame, 'TButton'))
+    file_menu.add_command(label="🗑️ Sound entfernen", command=lambda: logic.update_sound(top_frame))
     file_menu.add_separator()
     file_menu.add_command(label="❌ Beenden", command=lambda: logic.quit_program(window))
 
@@ -66,6 +66,6 @@ def build_gui():
     ttk.Button(bottom_frame, text="❌ Beenden",
                command=lambda: logic.quit_program(window)).pack()
 
-    logic.load_sounds_from_file(left_frame, 'TButton')
+    logic.load_sounds_from_file(top_frame, 'TButton')
 
     return window
