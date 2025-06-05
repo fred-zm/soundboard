@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import logic
 
+
 def build_gui():
     window = tk.Tk()
     window.title("Soundboard Zukunftsmotor K17")
@@ -21,10 +22,13 @@ def build_gui():
 
     style = ttk.Style()
     style.configure('TButton', font=('Arial', 10))
-    style.configure('Selected.TButton', font=('Arial', 10, 'bold'), background='#aee')
+    style.configure('Selected.TButton', font=('Arial', 10, 'bold'), background='#aee', padding=(20, 20))
 
-    ttk.Button(top_frame, text='🎵 Sound hinzufügen',
+    ttk.Button(top_frame, text='🎵 Sound hinzufügen', padding=(20, 20),
                command=lambda: logic.add_sound(left_frame, 'TButton')).pack()
+
+    ttk.Button(top_frame, text='🗑️ Sound entfernen',
+                command=lambda: logic.update_sound(left_frame)).pack()
 
     ttk.Button(right_frame, text="▶️ abspielen", command=logic.play_sound).pack()
     ttk.Button(right_frame, text="⏹️ stoppen", command=logic.stop_sound).pack()

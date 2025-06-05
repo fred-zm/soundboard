@@ -76,6 +76,22 @@ def play_sound():
     else:
         mb.showinfo(title="Hinweis", message="Kein Sound ausgewählt!")
 
+def update_sound(frame):
+    if selected_sound[0] is None:
+        mb.showinfo("Hinweis", "Kein Sound ausgewählt!")
+        return
+
+    for i, (path, button) in enumerate(sound_buttons):
+        if path == selected_sound[0]:
+            button.destroy()
+            del sound_buttons[i]
+            selected_sound[0] = None
+            save_sounds_to_file()
+            mb.showinfo("Entfernt", "Sound wurde entfernt.")
+            return
+
+    mb.showinfo("Fehler", "Sound konnte nicht gefunden werden.")
+
 def stop_sound():
     pygame.mixer.music.stop()
 
