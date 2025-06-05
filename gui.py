@@ -6,42 +6,73 @@ import logic
 def build_gui():
     window = tk.Tk()
     window.title("Soundboard Zukunftsmotor K17")
-    window.geometry("600x600")
+    window.geometry("1000x600")
+
+    window.grid_rowconfigure(0, weight=0)
+    window.grid_rowconfigure(1, weight=1)
+    window.grid_rowconfigure(2, weight=0)
+    window.grid_columnconfigure(0, weight=1)
+
+    # Frames
 
     top_frame = ttk.Frame(window)
-    top_frame.pack(side='top', padx=5, pady=0)
+    top_frame.grid(row=0, column=0)
+
+    middle_frame = ttk.Frame(window)
+    middle_frame.grid(row=1, column=0)
+    middle_frame.grid_rowconfigure(0, weight=1)
+    middle_frame.grid_rowconfigure(1, weight=1)
+    middle_frame.grid_columnconfigure(0, weight=1)
+    middle_frame.grid_columnconfigure(1, weight=1)
 
     bottom_frame = ttk.Frame(window)
-    bottom_frame.pack(side='bottom', padx=5, pady=10)
+    bottom_frame.grid(row=2, column=0)
 
-    left_frame = ttk.Frame(window)
-    left_frame.pack(side='left', padx=2, pady=2)
-
-    right_frame = ttk.Frame(window)
-    right_frame.pack(side='right', padx=8, pady=2)
+    # Style
 
     style = ttk.Style()
-    style.configure('TButton', font=('Arial', 10))
-    style.configure('Selected.TButton', font=('Arial', 10, 'bold'), background='#aee', padding=(20, 20))
+    style.configure("TButton", font=("Arial", 10))
+    style.configure(
+        "Selected.TButton",
+        font=("Arial", 10, "bold"),
+        background="#aee",
+        padding=(20, 20),
+    )
 
-    ttk.Button(top_frame, text='🎵 Sound hinzufügen', padding=(20, 20),
-               command=lambda: logic.add_sound(left_frame, 'TButton')).pack()
+    # Buttons
 
-    ttk.Button(top_frame, text='🗑️ Sound entfernen',
-                command=lambda: logic.update_sound(left_frame)).pack()
+    ttk.Button(
+        top_frame,
+        text="🎵 Sound hinzufügen",
+        padding=(20, 20),
+        command=lambda: logic.add_sound(middle_frame, "TButton"),
+    ).pack()
 
-    ttk.Button(right_frame, text="▶️ abspielen", command=logic.play_sound).pack()
-    ttk.Button(right_frame, text="⏹️ stoppen", command=logic.stop_sound).pack()
+    ttk.Button(
+        top_frame,
+        text="🗑️ Sound entfernen",
+        command=lambda: logic.update_sound(middle_frame),
+    ).pack()
 
-    volume_slider = tk.Scale(right_frame, from_=0, to=100, orient=tk.HORIZONTAL,
-                             label="Lautstärke", command=logic.set_volume)
+    ttk.Button(bottom_frame, text="▶️ abspielen", command=logic.play_sound).pack()
+    ttk.Button(bottom_frame, text="⏹️ stoppen", command=logic.stop_sound).pack()
+
+    volume_slider = tk.Scale(
+        bottom_frame,
+        from_=0,
+        to=100,
+        orient=tk.HORIZONTAL,
+        label="Lautstärke",
+        command=logic.set_volume,
+    )
     volume_slider.set(70)
     logic.set_volume(70)
     volume_slider.pack()
 
-    ttk.Button(bottom_frame, text="❌ Beenden",
-               command=lambda: logic.quit_program(window)).pack()
+    ttk.Button(
+        top_frame, text="❌ Beenden", command=lambda: logic.quit_program(window)
+    ).pack()
 
-    logic.load_sounds_from_file(left_frame, 'TButton')
+    logic.load_sounds_from_file(middle_frame, "TButton")
 
     return window
