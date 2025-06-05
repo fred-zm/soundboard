@@ -25,6 +25,7 @@ def build_gui():
 
     ttk.Button(top_frame, text='🎵 Sound hinzufügen',
                command=lambda: logic.add_sound(left_frame, 'TButton')).pack()
+    ttk.Button(top_frame, text='Loeschen', command=logic.delete_sound).pack()
 
     ttk.Button(right_frame, text="▶️ abspielen", command=logic.play_sound).pack()
     ttk.Button(right_frame, text="⏹️ stoppen", command=logic.stop_sound).pack()
