@@ -127,8 +127,6 @@ def quit_program(window):
 def login(gui, benutzer, passwort):
     with open("accounts.json", "r", encoding="utf-8") as f:
         accounts = json.load(f)
-        for account in accounts["accounts"]:
-            if benutzer == account["name"] and passwort == account["pass"]:
-                gui.is_logged_in = True
-                break
-    gui.login_wikndow.destroy()
+        if benutzer == accounts[benutzer]["pass"]:
+            gui.is_logged_in = True
+    gui.login_window.destroy()

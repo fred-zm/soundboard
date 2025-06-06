@@ -1,9 +1,3 @@
 {
-    "accounts":
-    [
-        {
-            "name": "test",
-            "pass": "test"
-        }
-    ]
+    "test": {"pass": "test"}
 }
