@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python-specific
+*.log
+*.pot
+*.mo
+
+# Pygame mixer cache or temp files (falls vorhanden)
+*.wav~
+*.tmp
+
+# Data / assets you don't want to track
+data/button_sounds.json
+
+# Pillow temporary files
+*.icc
