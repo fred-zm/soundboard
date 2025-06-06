@@ -12,6 +12,10 @@ from state import (
     loop_var, fenster, sounds_speichern, sounds_laden
 )
 
+
+style.map('TButton', background=[('active', "#e73313"), ('pressed', "#e73313")])
+style.configure("BG.TFrame", background=BG_COLOR)
+style.configure("Custom.TCheckbutton", background=BG_COLOR)
 from PIL import Image, ImageTk
 
 def setup_canvas_background(canvas):

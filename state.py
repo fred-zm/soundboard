@@ -1,5 +1,6 @@
 # state.py
 import tkinter as tk
+from tkinter import ttk
 import json
 import os
 
@@ -8,6 +9,23 @@ fenster = tk.Tk()
 BG_COLOR = "#f0f0f0"
 BTN_COLOR = "#f59506"
 
+style = ttk.Style()
+style.theme_use('clam')
+style.configure('TButton',
+    padding=6,
+    relief='flat',
+    background=BTN_COLOR,
+    foreground="black",
+    borderwidth=0,
+    focusthickness=0,
+    focuscolor='none'
+)
+style.map('TButton', background=[('active', "#e73313"), ('pressed', "#e73313")])
+style.configure("BG.TFrame", background=BG_COLOR)
+style.configure("Custom.TCheckbutton", background=BG_COLOR)
+style.map('TButton', background=[('active', "#e73313"), ('pressed', "#e73313")])
+style.configure("BG.TFrame", background=BG_COLOR)
+style.configure("Custom.TCheckbutton", background=BG_COLOR)
 text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04', 'Sound_05']
 button_list = []
 SOUNDS_FILE = "button_sounds.json"
