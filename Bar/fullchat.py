@@ -166,6 +166,15 @@ def show_login():
     login_win.resizable(False, False)
     login_win.grab_set()  # Fokus auf Login
 
+    # Musik beim Öffnen abspielen
+    try:
+        pygame.mixer.music.load("bar/funny-bgm-240795.mp3")  # Pfad zu deiner Musikdatei
+        pygame.mixer.music.play(-1)  # -1 = Endlosschleife
+
+
+    except Exception as e:
+        print(f"Login-Musik konnte nicht geladen werden: {e}")
+    
     # Benutzername
     ttk.Label(login_win, text="Benutzername:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
     username_entry = ttk.Entry(login_win)
@@ -181,11 +190,26 @@ def show_login():
         username = username_entry.get()
         password = password_entry.get()
         if username == "admin" and password == "1234":
+            pygame.mixer.music.stop()  # Musik stoppen nach Login
             login_win.destroy()
             fenster.deiconify()  # Hauptfenster anzeigen
         else:
+            try:
+                pygame.mixer.music.load("bar/mario.mp3")  # Fehler-Sound
+                pygame.mixer.music.play()
+                def play_login_musik():
+                    while pygame.mixer.music.get_busy():
+                        time.sleep(0.1)
+                    try:
+                        pygame.mixer.music.load("bar/funny-bgm-240795.mp3")  # Zurück zur Login-Musik
+                        pygame.mixer.music.play(-1)    
+                    except Exception as e:
+                        print(f"Fehler beim Abspielen des Fehler-Sounds: {e}")
+                threading.Thread(target=play_login_musik, daemon=True).start()
+            except Exception as e:
+                print(f"Fehler beim Abspielen des Login-Sounds: {e}")
             ttk.Label(login_win, text="Login fehlgeschlagen!", foreground="red").grid(row=3, column=0, columnspan=2)
-
+            
     # Login-Button
     login_btn = ttk.Button(login_win, text="Login", command=check_login)
     login_btn.grid(row=2, column=0, columnspan=2, pady=10)
