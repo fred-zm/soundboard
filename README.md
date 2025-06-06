@@ -1,4 +1,4 @@
-Soundboard v0.1
+Soundboard Zukunftsmotor K17
 
 Vorraussetzungen:
 
