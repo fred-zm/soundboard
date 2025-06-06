@@ -7,6 +7,7 @@ import pygame
 import os
 import threading
 import time
+import json
 
 # Farben definieren
 BG_COLOR = "#f0f0f0"
@@ -44,6 +45,20 @@ canvas.create_window(300, 30, window=info_label)
 text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04', 'Sound_05']
 button_sounds = {"Sound_01": "example.mp3", "Sound_02": "example.mp3", "Sound_03": "example.mp3", "Sound_04": "example.mp3", "Sound_05": "example.mp3"}
 button_list = []
+
+SOUNDS_FILE = "button_sounds.json"
+
+def sounds_speichern():
+    with open(SOUNDS_FILE, "w", encoding="utf-8") as f:
+        json.dump(button_sounds, f)
+
+def sounds_laden():
+    global button_sounds
+    if os.path.exists(SOUNDS_FILE):
+        with open(SOUNDS_FILE, "r", encoding="utf-8") as f:
+            button_sounds = json.load(f)
+
+sounds_laden()
 
 # Funktion: Sound-Datei auswählen und zuweisen
 def sound_datei_zuteilen(name):
@@ -138,6 +153,7 @@ button_frame = ttk.Frame(canvas, style="BG.TFrame")
 canvas.create_window(300, 650, window=button_frame)
 
 def datei_beenden():
+    sounds_speichern()
     pygame.mixer.quit()
     fenster.quit()
 
@@ -214,7 +230,7 @@ def show_login():
             
     # Login-Button
     login_btn = ttk.Button(login_win, text="Login", command=check_login)
-    login_btn.grid(row=2, column=0, columnspan=2, pady=10)
+    login_btn.grid(row=2, column=0, columnspan=1, pady=10)
 
     # Hauptfenster zunächst verstecken
     fenster.withdraw()
