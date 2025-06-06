@@ -10,7 +10,7 @@ import time
 
 # Farben definieren
 BG_COLOR = "#f0f0f0"
-BTN_COLOR = "#06f5e9"
+BTN_COLOR = "#f59506"
 
 # Pygame initialisieren
 pygame.mixer.init()
@@ -26,7 +26,7 @@ canvas = tk.Canvas(fenster, width=600, height=700, highlightthickness=0)
 canvas.pack(fill="both", expand=True)
 
 # Hintergrundbild laden und auf Canvas zeichnen
-bg_image = Image.open("bar/death.jpg").resize((600, 700), Image.LANCZOS)
+bg_image = Image.open("bar/berserk.jpg").resize((600, 700), Image.LANCZOS)
 bg_photo = ImageTk.PhotoImage(bg_image)
 canvas.bg_photo = bg_photo  # Referenz speichern!
 canvas.create_image(0, 0, image=bg_photo, anchor="nw")
@@ -41,8 +41,8 @@ info_label = ttk.Label(
 canvas.create_window(300, 30, window=info_label)
 
 # Globale Variablen
-text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04']
-button_sounds = {"Sound_01": "example.mp3", "Sound_02": "example.mp3", "Sound_03": "example.mp3", "Sound_04": "example.mp3"}
+text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04', 'Sound_05']
+button_sounds = {"Sound_01": "example.mp3", "Sound_02": "example.mp3", "Sound_03": "example.mp3", "Sound_04": "example.mp3", "Sound_05": "example.mp3"}
 button_list = []
 
 # Funktion: Sound-Datei auswählen und zuweisen
@@ -96,7 +96,7 @@ style.configure('TButton',
     focusthickness=0,
     focuscolor='none'
 )
-style.map('TButton', background=[('active', '#04c4d6'), ('pressed', '#02a3b0')])
+style.map('TButton', background=[('active', "#e73313"), ('pressed', "#e73313")])
 style.configure("BG.TFrame", background=BG_COLOR)
 style.configure("Custom.TCheckbutton", background=BG_COLOR)
 
@@ -184,6 +184,8 @@ def show_login():
     ttk.Label(login_win, text="Passwort:").grid(row=1, column=0, padx=10, pady=10, sticky="e")
     password_entry = ttk.Entry(login_win, show="*")
     password_entry.grid(row=1, column=1, padx=10, pady=10)
+    password_entry.bind("<Return>", lambda event: check_login())
+ 
 
     # Login-Logik
     def check_login():
