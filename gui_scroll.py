@@ -7,6 +7,34 @@ def build_gui():
     window = tk.Tk()
     window.title("Soundboard Zukunftsmotor K17")
     window.geometry("1000x600")
+    # window.attributes('-disabled', True)
+
+    # Loginwindow
+
+    login = tk.Toplevel(window)
+    login.geometry('400x200')
+    login.attributes('-topmost', 1)
+    login.title('Login')
+    login.grid_rowconfigure(0, weight=1)
+    login.grid_rowconfigure(1, weight=1)
+    login.grid_rowconfigure(2, weight=1)
+    login.grid_columnconfigure(0, weight=0)
+    login.grid_columnconfigure(1, weight=1)
+
+    # Loginwidgets
+
+    username = ttk.Label(login, text='Username:')
+    username.grid(row=0, column=0)
+    password = ttk.Label(login, text="Password:")
+    password.grid(row=1, column=0)
+
+    input_username = ttk.Entry(login)
+    input_username.grid(row=0, column=1)
+    input_password = ttk.Entry(login)
+    input_password.grid(row=1, column=1)
+
+    submit_button = ttk.Button(login, text='Login')
+    submit_button.grid(row=2, column=1)
 
     window.grid_rowconfigure(0, weight=1)
     window.grid_rowconfigure(1, weight=1)
