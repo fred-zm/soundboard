@@ -103,3 +103,7 @@ def set_volume(val):
 def quit_program(window):
     pygame.mixer.quit()
     window.quit()
+
+def login(frame):
+    frame.quit()
+    return True
