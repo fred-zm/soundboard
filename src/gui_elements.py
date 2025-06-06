@@ -108,6 +108,16 @@ def beenden(fenster, sound_manager):
     sound_manager.quit()
     fenster.quit()
 
+anmeldedaten_db = {
+    "Martin":"Einhorn",
+    "Samuele":"1234",
+    "Karsten":"Thor",
+    "Sascha":"Doktor"
+}
+
+
+
+
 def show_login_window(fenster, sound_manager):
     login_win = tk.Toplevel()
     login_win.title("Login")
@@ -132,7 +142,7 @@ def show_login_window(fenster, sound_manager):
     def check_login():
         username = username_entry.get()
         password = password_entry.get()
-        if username == "admin" and password == "1234":
+        if username in anmeldedaten_db and anmeldedaten_db[username] == password:
             pygame.mixer.music.stop()
             login_win.destroy()
             fenster.deiconify()
