@@ -26,7 +26,7 @@ canvas = tk.Canvas(fenster, width=600, height=700, highlightthickness=0)
 canvas.pack(fill="both", expand=True)
 
 # Hintergrundbild laden und auf Canvas zeichnen
-bg_image = Image.open("bar/serainfullsuit.jpg").resize((600, 700), Image.LANCZOS)
+bg_image = Image.open("bar/death.jpg").resize((600, 700), Image.LANCZOS)
 bg_photo = ImageTk.PhotoImage(bg_image)
 canvas.bg_photo = bg_photo  # Referenz speichern!
 canvas.create_image(0, 0, image=bg_photo, anchor="nw")
@@ -195,7 +195,7 @@ def show_login():
             fenster.deiconify()  # Hauptfenster anzeigen
         else:
             try:
-                pygame.mixer.music.load("bar/mario.mp3")  # Fehler-Sound
+                pygame.mixer.music.load("bar/Mario.mp3")  # Fehler-Sound
                 pygame.mixer.music.play()
                 def play_login_musik():
                     while pygame.mixer.music.get_busy():
