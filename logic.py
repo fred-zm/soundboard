@@ -8,6 +8,7 @@ SOUND_JSON_PATH = "sounds.json"
 
 pygame.mixer.init()
 
+# Globale Verwaltung der Buttons und Auswahl
 sound_buttons = []
 selected_sound = [None]
 
@@ -21,8 +22,26 @@ def create_sound_button(filepath, frame, style):
         selected_sound[0] = filepath
 
     new_button = ttk.Button(frame, text=button_text, command=select)
-    new_button.pack(padx=5, pady=5)
+    #new_button.pack(padx=5, pady=5, fill='x', anchor='w')  # Buttons dehnen sich in der Breite
     sound_buttons.append((filepath, new_button))
+    refresh_sound_buttons(frame)
+
+
+def refresh_sound_buttons(frame):
+    column_count = 3
+    row_count = len(sound_buttons)/column_count
+    if row_count > int(row_count):
+        row_count +=1
+    row_count = int(row_count)
+    for y in range(row_count):
+        frame.rowconfigure(y, weight=1)
+        for x in range(column_count):
+            frame.columnconfigure(x, weight=1)
+            button_index = x + y * column_count
+            if button_index > len(sound_buttons) -1:
+                return
+            sound_buttons[button_index][1].grid(column=x*1, row=y, padx=5, pady=5, sticky='nesw')
+
 
 def load_sounds_from_file(frame, style):
     if not os.path.exists(SOUND_JSON_PATH):
@@ -65,18 +84,7 @@ def add_sound(frame, style):
         mb.showinfo(title='Sound hinzugefügt', message=os.path.basename(filename))
         save_sounds_to_file()
 
-def play_sound():
-    sound_path = selected_sound[0]
-    if sound_path:
-        try:
-            pygame.mixer.music.load(sound_path)
-            pygame.mixer.music.play()
-        except Exception as e:
-            mb.showinfo(title="Fehler", message=f"Konnte Sound nicht abspielen:\n{e}")
-    else:
-        mb.showinfo(title="Hinweis", message="Kein Sound ausgewählt!")
-
-def update_sound(frame):
+def remove_selected_sound(frame):
     if selected_sound[0] is None:
         mb.showinfo("Hinweis", "Kein Sound ausgewählt!")
         return
@@ -87,10 +95,22 @@ def update_sound(frame):
             del sound_buttons[i]
             selected_sound[0] = None
             save_sounds_to_file()
-            mb.showinfo("Entfernt", "Sound wurde entfernt.")
+            mb.showinfo("Sound entfernt", "Der Sound wurde entfernt.")
             return
 
+    refresh_sound_buttons(frame)
     mb.showinfo("Fehler", "Sound konnte nicht gefunden werden.")
+
+def play_sound():
+    sound_path = selected_sound[0]
+    if sound_path:
+        try:
+            pygame.mixer.music.load(sound_path)
+            pygame.mixer.music.play()
+        except Exception as e:
+            mb.showinfo(title="Fehler", message=f"Konnte Sound nicht abspielen:\n{e}")
+    else:
+        mb.showinfo(title="Hinweis", message="Kein Sound ausgewählt!")
 
 def stop_sound():
     pygame.mixer.music.stop()
