@@ -127,6 +127,11 @@ def quit_program(window):
 def login(gui, benutzer, passwort):
     with open("accounts.json", "r", encoding="utf-8") as f:
         accounts = json.load(f)
-        if benutzer == accounts[benutzer]["pass"]:
-            gui.is_logged_in = True
-    gui.login_window.destroy()
+        try:
+            if passwort == accounts[benutzer]["pass"]:
+                gui.is_logged_in = True
+                gui.login_window.destroy()
+            else:
+                mb.showerror("", "Falsches Passwort")
+        except:
+            mb.showerror("", "Benutzer nicht vorhanden")

@@ -6,6 +6,7 @@ import logic
 class Gui:
     def __init__(self):
         self.is_logged_in = False
+        self.quited = False
 
     def login(self):
         self.login_window = tk.Tk()
@@ -30,7 +31,6 @@ class Gui:
             widget.grid_configure(padx=10, pady=5)
 
         self.login_window.mainloop()
-        return self.is_logged_in
 
     def run(self):
         #Main Window
