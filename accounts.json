@@ -1,0 +1,9 @@
+{
+    "accounts":
+    [
+        {
+            "name": "test",
+            "pass": "test"
+        }
+    ]
+}

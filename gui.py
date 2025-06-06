@@ -4,9 +4,33 @@ import logic
 
 
 class Gui:
+    def __init__(self):
+        self.is_logged_in = False
+
     def login(self):
         self.login_window = tk.Tk()
+        self.login_window
+        self.login_window.title("Login")
+        #self.login_window.geometry("500x200")
+        self.login_window.grid_rowconfigure(0, weight=1)
+        self.login_window.grid_rowconfigure(1, weight=1)
+        self.login_window.grid_rowconfigure(2, weight=1)
+        self.login_window.grid_columnconfigure(0, weight=1)
+        self.login_window.grid_columnconfigure(1, weight=2)
+
+        ttk.Label(self.login_window, text="Benutzer:", font="30").grid(column=0, row=0, sticky="es")
+        ttk.Label(self.login_window, text="Passwort:", font="30").grid(column=0, row=1, sticky="en")
+        benutzer = tk.StringVar()
+        ttk.Entry(self.login_window, textvariable=benutzer).grid(column=1, row=0, sticky="ws")
+        passwort = tk.StringVar()
+        ttk.Entry(self.login_window, textvariable=passwort).grid(column=1, row=1, sticky="nw")
+        ttk.Button(self.login_window, text="Login", command=lambda: logic.login(self, benutzer.get(), passwort.get())).grid(column=1, row=2, sticky="e")
+
+        for widget in self.login_window.winfo_children():
+            widget.grid_configure(padx=10, pady=5)
+
         self.login_window.mainloop()
+        return self.is_logged_in
 
     def run(self):
         #Main Window
