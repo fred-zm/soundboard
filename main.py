@@ -2,4 +2,6 @@ import gui
 
 if __name__ == "__main__":
     app = gui.Gui()
-    app.run()
+    loggedin = app.login()
+    if not loggedin:
+        app.run()

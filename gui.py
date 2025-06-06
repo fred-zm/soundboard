@@ -4,7 +4,11 @@ import logic
 
 
 class Gui:
-    def __init__(self):
+    def login(self):
+        self.login_window = tk.Tk()
+        self.login_window.mainloop()
+
+    def run(self):
         #Main Window
         self.window = tk.Tk()
         self.window.title("Soundboard Zukunftsmotor K17")
@@ -48,7 +52,7 @@ class Gui:
         bottom_frame.grid_columnconfigure(2, weight=1)
         bottom_frame.grid_columnconfigure(3, weight=0)
 
-        # Scrollbarer Bereich für Sound-Buttons (links)
+        # Scrollbarer Bereich für Sound-Buttons (top_frame)
 
         canvas = tk.Canvas(top_frame)
         scrollbar = ttk.Scrollbar(top_frame, orient="vertical", command=canvas.yview)
@@ -111,5 +115,4 @@ class Gui:
         logic.load_sounds_from_file(canvas, "TButton")
 
 
-    def run(self):
         self.window.mainloop()
