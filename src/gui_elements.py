@@ -9,7 +9,9 @@ import pygame
 from src.sound_manager import SoundManager
 from PIL import Image, ImageTk
 
-text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04', 'Sound_05']
+btn_labels = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04', 'Sound_05',
+              'Sound_06', 'Sound_07', 'Sound_08', 'Sound_09', 'Sound_10',
+              'Sound_11', 'Sound_12', 'Sound_13', 'Sound_14', 'Sound_15']
 
 # GUI Setup-Funktionen
 def create_main_interface(fenster, canvas, sound_manager):
@@ -44,9 +46,11 @@ def create_main_interface(fenster, canvas, sound_manager):
     sound_button_frame = ttk.Frame(canvas, style="BG.TFrame")
     canvas.create_window(300, 100, window=sound_button_frame)
 
-    for name in text_variable:
+    for idx, name in enumerate(btn_labels):
+        row = idx // 5
+        col = idx % 5
         btn = ttk.Button(sound_button_frame, text=name, style='TButton')
-        btn.pack(side='left', expand=True, padx=8, pady=8)
+        btn.grid(row=row, column=col, padx=8, pady=8, sticky="ew")
         btn.config(command=lambda name=name: sound_manager.play_sound(name))
         btn.bind("<Button-3>", lambda event, name=name: assign_sound_file(name, sound_manager))
 
