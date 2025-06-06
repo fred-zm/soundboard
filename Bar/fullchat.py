@@ -158,4 +158,41 @@ def alle_abspielen():
 ttk.Button(button_frame, text='Alle abspielen', command=alle_abspielen, style='TButton').pack(side='left', expand=True, padx=20)
 ttk.Button(button_frame, text='Beenden', command=datei_beenden, style='TButton').pack(side='left', expand=True, padx=20)
 
+# Login-Funktion
+def show_login():
+    login_win = tk.Toplevel()
+    login_win.title("Login")
+    login_win.geometry("300x150")
+    login_win.resizable(False, False)
+    login_win.grab_set()  # Fokus auf Login
+
+    # Benutzername
+    ttk.Label(login_win, text="Benutzername:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
+    username_entry = ttk.Entry(login_win)
+    username_entry.grid(row=0, column=1, padx=10, pady=10)
+
+    # Passwort
+    ttk.Label(login_win, text="Passwort:").grid(row=1, column=0, padx=10, pady=10, sticky="e")
+    password_entry = ttk.Entry(login_win, show="*")
+    password_entry.grid(row=1, column=1, padx=10, pady=10)
+
+    # Login-Logik
+    def check_login():
+        username = username_entry.get()
+        password = password_entry.get()
+        if username == "admin" and password == "1234":
+            login_win.destroy()
+            fenster.deiconify()  # Hauptfenster anzeigen
+        else:
+            ttk.Label(login_win, text="Login fehlgeschlagen!", foreground="red").grid(row=3, column=0, columnspan=2)
+
+    # Login-Button
+    login_btn = ttk.Button(login_win, text="Login", command=check_login)
+    login_btn.grid(row=2, column=0, columnspan=2, pady=10)
+
+    # Hauptfenster zunächst verstecken
+    fenster.withdraw()
+
+show_login()
+
 fenster.mainloop()
