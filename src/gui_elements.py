@@ -5,7 +5,20 @@ from tkinter.messagebox import showinfo
 import threading
 import time
 import os
+<<<<<<< HEAD:src/gui_elements.py
 import pygame
+=======
+
+from state import (
+    BG_COLOR, BTN_COLOR, text_variable, button_sounds, button_list,
+    loop_var, fenster, sounds_speichern, sounds_laden
+)
+
+
+style.map('TButton', background=[('active', "#e73313"), ('pressed', "#e73313")])
+style.configure("BG.TFrame", background=BG_COLOR)
+style.configure("Custom.TCheckbutton", background=BG_COLOR)
+>>>>>>> 5c06dbce7bd58f104631b0d474bb35b18b948de6:components.py
 from PIL import Image, ImageTk
 
 text_variable = ['Sound_01', 'Sound_02', 'Sound_03', 'Sound_04', 'Sound_05']
