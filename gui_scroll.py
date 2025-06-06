@@ -1,14 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
-import logic_scroll
+import logic_login
 
 
 def build_gui():
-    is_logged_in = False
-
     window = tk.Tk()
     window.title("Soundboard Zukunftsmotor K17")
     window.geometry("1000x600")
+    window.withdraw()
     # window.attributes('-disabled', True)
 
     # Loginwindow
@@ -35,11 +34,12 @@ def build_gui():
     input_password = ttk.Entry(login)
     input_password.grid(row=1, column=1)
 
-    submit_button = ttk.Button(login, text='Login', command=lambda: logic_scroll.login(login))
+    submit_button = ttk.Button(login, text='Login', command=lambda: logic_login.login_user(input_username.get(), input_password.get(), login, start))
     submit_button.grid(row=2, column=1)
 
-    if is_logged_in:
-
+    
+    def start():
+        window.deiconify()
         window.grid_rowconfigure(0, weight=1)
         window.grid_rowconfigure(1, weight=1)
         window.grid_columnconfigure(0, weight=1)
@@ -90,11 +90,11 @@ def build_gui():
         # Menüfunktionen
         file_menu.add_command(
             label="🎵 Sound hinzufügen",
-            command=lambda: logic_scroll.add_sound(scrollable_frame, "TButton"),
+            command=lambda: logic_login.add_sound(scrollable_frame, "TButton"),
         )
         file_menu.add_separator()
         file_menu.add_command(
-            label="❌ Beenden", command=lambda: logic_scroll.quit_program(window)
+            label="❌ Beenden", command=lambda: logic_login.quit_program(window)
         )
 
         # Styles
@@ -109,16 +109,16 @@ def build_gui():
         )
 
         # Soundsteuerung (rechter Bereich)
-        ttk.Button(bottom_frame, text="▶️ abspielen", command=logic_scroll.play_sound).grid(
+        ttk.Button(bottom_frame, text="▶️ abspielen", command=logic_login.play_sound).grid(
             row=0, column=0
         )
-        ttk.Button(bottom_frame, text="⏹️ stoppen", command=logic_scroll.stop_sound).grid(
+        ttk.Button(bottom_frame, text="⏹️ stoppen", command=logic_login.stop_sound).grid(
             row=0, column=1
         )
         ttk.Button(
             bottom_frame,
             text="🗑️ Sound entfernen",
-            command=lambda: logic_scroll.remove_selected_sound(scrollable_frame),
+            command=lambda: logic_login.remove_selected_sound(scrollable_frame),
         ).grid(row=0, column=3)
 
         # Lautstärkeregler
@@ -128,13 +128,13 @@ def build_gui():
             to=100,
             orient=tk.HORIZONTAL,
             label="Lautstärke",
-            command=logic_scroll.set_volume,
+            command=logic_login.set_volume,
         )
         volume_slider.set(70)
-        logic_scroll.set_volume(70)
+        logic_login.set_volume(70)
         volume_slider.grid(row=0, column=2, sticky="ew")
 
         # Sound-Buttons laden
-        logic_scroll.load_sounds_from_file(scrollable_frame, "TButton")
-
+        logic_login.load_sounds_for_user(scrollable_frame, "TButton")
+    
     return window

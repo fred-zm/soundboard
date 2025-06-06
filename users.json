@@ -1,0 +1,15 @@
+{
+    "admin": {
+        "password": "1234",
+        "sounds": [
+            "C:/Users/marius/Desktop/Modul3/projects/tkinter/live_coding/soundboard/sounds/Der Zonk.mp3"
+        ]
+    },
+    "benutzer1": {
+        "password": "passwort1",
+        "sounds": [
+            "C:/Users/marius/Desktop/Modul3/projects/tkinter/live_coding/soundboard/sounds/Whip.mp3",
+            "C:/Users/marius/Desktop/Modul3/projects/tkinter/live_coding/soundboard/sounds/Jeopardy.mp3"
+        ]
+    }
+}

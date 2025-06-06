@@ -13,7 +13,8 @@ pygame.mixer.init()
 sound_buttons = []
 selected_sound = [None]
 
-def login_user(username, password):
+
+def login_user(username, password, frame, callback):
     if not os.path.exists(USER_JSON_PATH):
         mb.showerror("Fehler", "Benutzerdaten nicht gefunden.")
         return False
@@ -23,10 +24,11 @@ def login_user(username, password):
 
     if username in users and users[username]["password"] == password:
         current_user["name"] = username
-        return True
+        frame.destroy()
+        callback()
     else:
         mb.showerror("Login fehlgeschlagen", "Falscher Benutzername oder Passwort.")
-        return False
+        is_logged_in = False
 
 def create_sound_button(filepath, frame, style):
     button_text = os.path.splitext(os.path.basename(filepath))[0]
@@ -49,6 +51,7 @@ def load_sounds_for_user(frame, style):
         with open(USER_JSON_PATH, "r", encoding="utf-8") as f:
             users = json.load(f)
             sound_paths = users[current_user["name"]]["sounds"]
+            print(sound_paths)
 
         for path in sound_paths:
             if os.path.exists(path):

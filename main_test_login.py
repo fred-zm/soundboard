@@ -1,5 +1,5 @@
-import gui_login
+import gui_scroll
 
 if __name__ == "__main__":
-    app = gui_login.build_gui()
+    app = gui_scroll.build_gui()
     app.mainloop()
