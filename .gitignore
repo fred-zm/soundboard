@@ -1,6 +1,9 @@
 #App
 sounds/
 sounds.json
+build/
+dist/
+*.spec
 
 # Python
 __pycache__/
