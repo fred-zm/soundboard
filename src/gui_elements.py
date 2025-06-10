@@ -92,7 +92,7 @@ def create_main_interface(fenster, canvas, sound_manager):
     button_frame = ttk.Frame(canvas, style="BG.TFrame")
     canvas.create_window(300, 650, window=button_frame)
 
-    ttk.Button(button_frame, text='Alle abspielen', command=lambda: sound_manager.play_all_sounds(text_variable), style='TButton').pack(side='left', expand=True, padx=20)
+    ttk.Button(button_frame, text='Alle abspielen', command=lambda: sound_manager.play_all_sounds(btn_labels), style='TButton').pack(side='left', expand=True, padx=20)
     ttk.Button(button_frame, text='Beenden', command=lambda: beenden(fenster, sound_manager), style='TButton').pack(side='left', expand=True, padx=20)
 
 def assign_sound_file(name, sound_manager):
