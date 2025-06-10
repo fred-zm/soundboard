@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 import logic
 
 def build_gui():
@@ -95,6 +96,22 @@ def build_gui():
         volume_slider.set(70)
         logic.set_volume(70)
         volume_slider.pack()
+
+        # Logo rechts außen (Spalte 5)
+        logo_frame = ttk.Frame(lower_frame)
+        logo_frame.grid(row=0, column=5, sticky="e", padx=(10, 10))
+
+        # Bild laden und skalieren
+        try:
+            logo_image = Image.open("zlogo.png")  # Bilddateiname hier anpassen
+            logo_image = logo_image.resize((60, 60))  # Größe anpassen
+            logo_photo = ImageTk.PhotoImage(logo_image)
+
+            logo_label = ttk.Label(logo_frame, image=logo_photo)
+            logo_label.image = logo_photo  # Referenz speichern, sonst wird es gelöscht
+            logo_label.pack()
+        except Exception as e:
+            print(f"Fehler beim Laden des Logos: {e}")
 
         # Menüfunktionen
         file_menu.add_command(
