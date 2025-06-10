@@ -4,6 +4,8 @@ import pygame
 from tkinter import filedialog as fd, messagebox as mb
 from tkinter import ttk
 
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 USER_JSON_PATH = "users.json"
 current_user = {"name": None}
 
@@ -12,7 +14,6 @@ pygame.mixer.init()
 # Globale Verwaltung der Buttons und Auswahl
 sound_buttons = []
 selected_sound = [None]
-
 
 def login_user(username, password, frame, callback):
     if not os.path.exists(USER_JSON_PATH):
@@ -31,6 +32,9 @@ def login_user(username, password, frame, callback):
         is_logged_in = False
 
 def create_sound_button(filepath, frame, style):
+    # Stelle sicher, dass der Pfad absolut ist (zur Sicherheit)
+    filepath = os.path.abspath(filepath)
+
     button_text = os.path.splitext(os.path.basename(filepath))[0]
 
     def select():
@@ -40,7 +44,16 @@ def create_sound_button(filepath, frame, style):
         selected_sound[0] = filepath
 
     new_button = ttk.Button(frame, text=button_text, command=select)
-    new_button.pack(padx=5, pady=5, fill='x', anchor='w')  # Buttons dehnen sich in der Breite
+
+    # Rasterposition: nebeneinander, dann neue Zeile
+    index = len(sound_buttons)
+    columns_per_row = 4
+    row = index // columns_per_row
+    col = index % columns_per_row
+
+    new_button.grid(row=row, column=col, padx=5, pady=5, sticky='ew')
+    frame.grid_columnconfigure(col, weight=1)
+
     sound_buttons.append((filepath, new_button))
 
 def load_sounds_for_user(frame, style):
@@ -51,11 +64,11 @@ def load_sounds_for_user(frame, style):
         with open(USER_JSON_PATH, "r", encoding="utf-8") as f:
             users = json.load(f)
             sound_paths = users[current_user["name"]]["sounds"]
-            print(sound_paths)
 
         for path in sound_paths:
-            if os.path.exists(path):
-                create_sound_button(path, frame, style)
+            abs_path = os.path.join(PROJECT_DIR, path)
+            if os.path.exists(abs_path):
+                create_sound_button(abs_path, frame, style)
     except Exception as e:
         print(f"Fehler beim Laden der Sounds: {e}")
 
@@ -66,7 +79,7 @@ def save_sounds_for_user():
     try:
         with open(USER_JSON_PATH, "r+", encoding="utf-8") as f:
             users = json.load(f)
-            users[current_user["name"]]["sounds"] = [p for p, _ in sound_buttons]
+            users[current_user["name"]]["sounds"] = [os.path.relpath(p, PROJECT_DIR) for p, _ in sound_buttons]
             f.seek(0)
             json.dump(users, f, indent=4)
             f.truncate()
@@ -80,20 +93,31 @@ def add_sound(frame, style):
         ('Alle Dateien', '*.*')
     )
 
-    filename = fd.askopenfilename(
-        title='Sound hinzufügen',
+    filenames = fd.askopenfilenames(
+        title='Sounds hinzufügen',
         initialdir='./sounds',
         filetypes=filetypes
     )
 
-    if filename:
-        if any(existing_path == filename for existing_path, _ in sound_buttons):
-            mb.showinfo("Hinweis", "Sound wurde bereits hinzugefügt.")
-            return
+    if not filenames:
+        return
 
-        create_sound_button(filename, frame, style)
-        mb.showinfo(title='Sound hinzugefügt', message=os.path.basename(filename))
+    added_count = 0
+    for filename in filenames:
+        abs_filename = os.path.abspath(filename)
+
+        # Duplikate prüfen (immer mit absoluten Pfaden)
+        if any(os.path.samefile(abs_filename, existing_path) for existing_path, _ in sound_buttons):
+            continue
+
+        create_sound_button(abs_filename, frame, style)
+        added_count += 1
+
+    if added_count:
+        mb.showinfo(title='Sounds hinzugefügt', message=f"{added_count} Sound(s) wurden hinzugefügt.")
         save_sounds_for_user()
+    else:
+        mb.showinfo("Hinweis", "Alle ausgewählten Sounds sind bereits vorhanden.")
 
 def remove_selected_sound(frame):
     if selected_sound[0] is None:

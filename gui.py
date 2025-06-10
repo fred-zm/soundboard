@@ -2,139 +2,114 @@ import tkinter as tk
 from tkinter import ttk
 import logic
 
-
 def build_gui():
     window = tk.Tk()
     window.title("Soundboard Zukunftsmotor K17")
-    window.geometry("1000x600")
+    window.geometry("600x600")
     window.withdraw()
-    # window.attributes('-disabled', True)
+    window.resizable(False, False)
 
-    # Loginwindow
-
+    # Login Window
     login = tk.Toplevel(window)
     login.geometry('400x200')
     login.attributes('-topmost', 1)
     login.title('Login')
-    login.grid_rowconfigure(0, weight=1)
-    login.grid_rowconfigure(1, weight=1)
-    login.grid_rowconfigure(2, weight=1)
-    login.grid_columnconfigure(0, weight=0)
-    login.grid_columnconfigure(1, weight=1)
+    login.grid_rowconfigure([0, 1, 2], weight=1)
+    login.grid_columnconfigure([0, 1], weight=1)
 
-    # Loginwidgets
-
-    username = ttk.Label(login, text='Username:')
-    username.grid(row=0, column=0)
-    password = ttk.Label(login, text="Password:")
-    password.grid(row=1, column=0)
+    ttk.Label(login, text='Username:').grid(row=0, column=0, sticky='e', padx=5, pady=5)
+    ttk.Label(login, text="Password:").grid(row=1, column=0, sticky='e', padx=5, pady=5)
 
     input_username = ttk.Entry(login)
-    input_username.grid(row=0, column=1)
-    input_password = ttk.Entry(login)
-    input_password.grid(row=1, column=1)
+    input_username.grid(row=0, column=1, padx=5, pady=5)
+    input_password = ttk.Entry(login, show='*')
+    input_password.grid(row=1, column=1, padx=5, pady=5)
 
-    submit_button = ttk.Button(login, text='Login', command=lambda: logic.login_user(input_username.get(), input_password.get(), login, start))
-    submit_button.grid(row=2, column=1)
+    ttk.Button(
+        login, text='Login',
+        command=lambda: logic.login_user(input_username.get(), input_password.get(), login, start)
+    ).grid(row=2, column=1, pady=10)
 
-    
     def start():
         window.deiconify()
-        window.grid_rowconfigure(0, weight=1)
-        window.grid_rowconfigure(1, weight=1)
-        window.grid_columnconfigure(0, weight=1)
 
         # Menüleiste
         menubar = tk.Menu(window)
         window.config(menu=menubar)
-
         file_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Datei", menu=file_menu)
 
-        # Frames für Layout
-        top_frame = ttk.Frame(window)
+        # Gesamtlayout (2 Zeilen: oben Inhalt, unten Steuerung)
+        window.grid_rowconfigure(0, weight=1)
+        window.grid_rowconfigure(1, weight=0)
+        window.grid_columnconfigure(0, weight=1)
 
-        top_frame.grid(row=0, column=0, sticky="nsew")
-        top_frame.grid_rowconfigure(0, weight=1)
-        top_frame.grid_columnconfigure(0, weight=1)
+        # --- OBERER TEIL: Scrollbare Sound-Buttons ---
+        upper_frame = ttk.Frame(window)
+        upper_frame.grid(row=0, column=0, sticky='nsew')
+        upper_frame.grid_rowconfigure(0, weight=1)
+        upper_frame.grid_columnconfigure(0, weight=1)
 
-        bottom_frame = ttk.Frame(window)
-        bottom_frame.grid(row=1, column=0, sticky="nsew")
-        bottom_frame.grid_rowconfigure(0, weight=1)
-        bottom_frame.grid_columnconfigure(0, weight=0)
-        bottom_frame.grid_columnconfigure(1, weight=0)
-        bottom_frame.grid_columnconfigure(2, weight=1)
-        bottom_frame.grid_columnconfigure(3, weight=0)
-
-        # Scrollbarer Bereich für Sound-Buttons (links)
-
-        canvas = tk.Canvas(top_frame)
-        scrollbar = ttk.Scrollbar(top_frame, orient="vertical", command=canvas.yview)
+        canvas = tk.Canvas(upper_frame)
+        scrollbar = ttk.Scrollbar(upper_frame, orient='vertical', command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
 
         scrollable_frame.bind(
-            "<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
 
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
 
         canvas.grid(row=0, column=0, sticky="nsew")
-        scrollbar.grid(row=0, column=1, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
 
-        canvas.bind_all(  # MouseWheel event triggers scrollbar on canvas not just on scrollbar
-            "<MouseWheel>",
-            lambda event: canvas.yview_scroll(-1 * (event.delta // 120), "units"),
+        # Unterer Bereich: Steuerung + Lautstärke
+        lower_frame = ttk.Frame(window)
+        lower_frame.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
+
+        # Spaltenkonfiguration: 0 = links, 1 = Buttons, 2 = rechts, 3 = Abstand, 4 = Lautstärke, 5 = Spacer rechts außen
+        lower_frame.grid_columnconfigure(0, weight=1)  # linker flexibler Spacer
+        lower_frame.grid_columnconfigure(1, weight=0)  # Buttons
+        lower_frame.grid_columnconfigure(2, weight=1)  # rechter flexibler Spacer
+        lower_frame.grid_columnconfigure(3, weight=0)  # fester Abstand
+        lower_frame.grid_columnconfigure(4, weight=0)  # Lautstärkeregler
+        lower_frame.grid_columnconfigure(5, weight=1)  # rechter leerer Dehnbereich → ⬅️ DAS macht's sichtbar!
+
+        # Steuerbuttons (zentriert)
+        button_frame = ttk.Frame(lower_frame)
+        button_frame.grid(row=0, column=1)
+        ttk.Button(button_frame, text="  ▶️", command=logic.play_sound, width=4).grid(row=0, column=0, padx=5)
+        ttk.Button(button_frame, text="⏹️", command=logic.stop_sound, width=4).grid(row=0, column=1, padx=5)
+        ttk.Button(button_frame, text=" 🗑️", command=lambda: logic.remove_selected_sound(scrollable_frame), width=4).grid(row=0, column=2, padx=5)
+
+        # Lautstärkeregler (rechts außen in Spalte 4)
+        right_frame = ttk.Frame(lower_frame)
+        right_frame.grid(row=0, column=4, sticky="e")
+
+        volume_slider = tk.Scale(
+            right_frame, from_=0, to=100, orient=tk.HORIZONTAL,
+            label="Lautstärke", command=logic.set_volume, length=150
         )
+        volume_slider.set(70)
+        logic.set_volume(70)
+        volume_slider.pack()
 
         # Menüfunktionen
         file_menu.add_command(
             label="🎵 Sound hinzufügen",
-            command=lambda: logic.add_sound(scrollable_frame, "TButton"),
+            command=lambda: logic.add_sound(scrollable_frame, 'TButton')
         )
         file_menu.add_separator()
-        file_menu.add_command(
-            label="❌ Beenden", command=lambda: logic.quit_program(window)
-        )
+        file_menu.add_command(label="❌ Beenden", command=lambda: logic.quit_program(window))
 
         # Styles
         style = ttk.Style()
+        style.configure('TButton', font=('Arial', 10), width=15, padding=(10, 10))
+        style.configure('Selected.TButton', font=('Arial', 10, 'bold'), background='#aee', width=15, padding=(10, 10))
 
-        style.configure("TButton", font=("Arial", 10))
-        style.configure(
-            "Selected.TButton",
-            font=("Arial", 10, "bold"),
-            background="#aee",
-            padding=(20, 20),
-        )
+        # Soundbuttons laden
+        logic.load_sounds_for_user(scrollable_frame, 'TButton')
 
-        # Soundsteuerung (rechter Bereich)
-        ttk.Button(bottom_frame, text="▶️ abspielen", command=logic.play_sound).grid(
-            row=0, column=0
-        )
-        ttk.Button(bottom_frame, text="⏹️ stoppen", command=logic.stop_sound).grid(
-            row=0, column=1
-        )
-        ttk.Button(
-            bottom_frame,
-            text="🗑️ Sound entfernen",
-            command=lambda: logic.remove_selected_sound(scrollable_frame),
-        ).grid(row=0, column=3)
-
-        # Lautstärkeregler
-        volume_slider = tk.Scale(
-            bottom_frame,
-            from_=0,
-            to=100,
-            orient=tk.HORIZONTAL,
-            label="Lautstärke",
-            command=logic.set_volume,
-        )
-        volume_slider.set(70)
-        logic.set_volume(70)
-        volume_slider.grid(row=0, column=2, sticky="ew")
-
-        # Sound-Buttons laden
-        logic.load_sounds_for_user(scrollable_frame, "TButton")
-    
     return window
