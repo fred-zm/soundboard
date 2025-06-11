@@ -3,7 +3,7 @@ import json
 import pygame
 from tkinter import filedialog as fd, messagebox as mb
 from tkinter import ttk
-
+import io
 import connect as db
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -27,13 +27,13 @@ def login_user(username, password, frame, callback):
         current_user["name"] = user['username']
         current_user["id"] = user['id']
         frame.destroy()
-        db.load_sounds(user['id'])
+        # db.load_sounds(user['id'])
         callback()
     else:
         mb.showerror("Login fehlgeschlagen", "Falscher Benutzername oder Passwort.")
 
 def create_sound_button(sound, frame, style):
-    button_text = 'test' #TODO
+    button_text = "Sound" + str(len(sound_buttons))
 
     def select():
         for _, btn in sound_buttons:
@@ -59,7 +59,7 @@ def load_sounds_for_user(frame, style):
     if current_user["name"] is None:
         return
 
-    sounds = db.load_sounds(current_user["name"])
+    sounds = db.load_sounds(current_user["id"])
     for (sound,) in sounds:
         create_sound_button(sound, frame, style)
     if False:
@@ -151,7 +151,8 @@ def rearrange_buttons(frame):
 def play_sound():
     if selected_sound:
         try:
-            sound = pygame.mixer.Sound(selected_sound)
+            sound_buffer = io.BytesIO(selected_sound)
+            sound = pygame.mixer.Sound(sound_buffer)
             sound.play()
         except Exception as e:
             mb.showinfo(title="Fehler", message=f"Konnte Sound nicht abspielen:\n{e}")
