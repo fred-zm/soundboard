@@ -52,8 +52,7 @@ def create_tables():
         USE sounds;
         CREATE TABLE sound (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            filename VARCHAR(255) NOT NULL,
-            filepath VARCHAR(512) UNIQUE NOT NULL,
+            sound_data LONGBLOB  NOT NULL,
             uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     """
@@ -74,55 +73,60 @@ def create_tables():
     my_cursor.fetchall()
     try: my_cursor.nextset() 
     except: pass
+    sql_usersound_table = """
+            USE sounds;
+            CREATE TABLE usersound (
+                user_id INT NOT NULL,
+                sound_id INT NOT NULL,
+                button_name VARCHAR(255),
+                PRIMARY KEY (user_id, sound_id),
+                FOREIGN KEY (user_id) REFERENCES user(id),
+                FOREIGN KEY (sound_id) REFERENCES sound(id)
+            )
+        """
+    my_cursor.execute(sql_usersound_table)
+    my_cursor.fetchall()
+    try: my_cursor.nextset() 
+    except: pass
     # Änderungen an der Datenbank festschreiben
     my_db.commit()
 
 def get_users(username):
     my_cursor.execute('use sounds')
-    my_cursor.execute(f"SELECT username, password FROM user where username = '{username}'")
+    my_cursor.execute(f"SELECT id, username, password FROM user where username = '{username}'")
     result = my_cursor.fetchall()
     user_dic = {}
     for entry in result:
-        user_dic[entry[0]] = entry[1]
+        user_dic['id'] = entry[0]
+        user_dic['username'] = entry[1]
+        user_dic['password'] = entry[2]
     return user_dic
-
-# def insert_from_user_input():
-
-#     name = input("Name: ")
-#     genre = input("Genre: ")
-
-#     val = f"'{datetime.now().strftime('%Y-%m-%d')}', '{name}', '{genre}'"
-#     sql = f"INSERT INTO sound VALUE ({val})"
-
-#     my_cursor.execute(sql)
-#     my_db.commit()
-
-
-# def update_sound():
-#     old_sound = input("Welcher Sound soll ersetzt werden? ")
-#     new_sound = input("Welcher Sound soll stattdessen eingetragen werden? ")
-
-#     sql = f"UPDATE sound SET name = '{new_sound}' WHERE name = '{old_sound}'"
-
-#     my_cursor.execute(sql)
-#     my_db.commit()
-
-
-# def show_all_data():
-#     my_cursor.execute("SELECT * FROM sound")
-#     result = my_cursor.fetchall()
-
-#     for item in result:
-#         print(item)
-
-
-# update_sound()
-# show_all_data()
 
 my_db = None
 create_connection()
 my_cursor = my_db.cursor()
 create_database()
 create_tables()
-if __name__ == '__main__':
-    users = get_users()
+
+def add_sound(file_path, user_id):
+    with open(file_path, 'rb') as file:
+        sound_blob = file.read()
+    my_cursor.execute("use sounds")
+    sql = "INSERT INTO sound (sound_data) VALUES (%s)"
+    my_cursor.execute(sql, (sound_blob,))
+    sql = "INSERT INTO usersound (user_id, sound_id, button_name) VALUES (%s, LAST_INSERT_ID(), 'test')"
+    my_cursor.execute(sql, (user_id,))
+    my_db.commit()
+    return sound_blob 
+
+def load_sounds(user_id):
+    my_cursor.execute("use sounds")
+    sql = "SELECT sound_data FROM sound s JOIN usersound us on s.id = us.sound_id WHERE us.user_id = %s"
+    my_cursor.execute(sql, (user_id,))
+    sounds = []
+    for sound in my_cursor.fetchall():
+        sounds.append(sound)
+    return sounds
+
+def save_sounds():
+    pass

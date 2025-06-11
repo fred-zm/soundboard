@@ -15,32 +15,32 @@ pygame.mixer.init()
 
 # Globale Verwaltung der Buttons und Auswahl
 sound_buttons = []
-selected_sound = [None]
+selected_sound = None
 
 def login_user(username, password, frame, callback):
     if not os.path.exists(USER_JSON_PATH):
         mb.showerror("Fehler", "Benutzerdaten nicht gefunden.")
         return False
 
-    users = db.get_users(username)
-    if username in users and users[username] == password:
-        current_user["name"] = username
+    user = db.get_users(username)
+    if 'id' in user and user['password'] == password:
+        current_user["name"] = user['username']
+        current_user["id"] = user['id']
         frame.destroy()
+        db.load_sounds(user['id'])
         callback()
     else:
         mb.showerror("Login fehlgeschlagen", "Falscher Benutzername oder Passwort.")
 
-def create_sound_button(filepath, frame, style):
-    # Stelle sicher, dass der Pfad absolut ist (zur Sicherheit)
-    filepath = os.path.abspath(filepath)
-
-    button_text = os.path.splitext(os.path.basename(filepath))[0]
+def create_sound_button(sound, frame, style):
+    button_text = 'test' #TODO
 
     def select():
         for _, btn in sound_buttons:
             btn.config(style=style)
         new_button.config(style='Selected.TButton')
-        selected_sound[0] = filepath
+        global selected_sound
+        selected_sound = sound
 
     new_button = ttk.Button(frame, text=button_text, command=select)
 
@@ -53,37 +53,43 @@ def create_sound_button(filepath, frame, style):
     new_button.grid(row=row, column=col, padx=5, pady=5, sticky='ew')
     frame.grid_columnconfigure(col, weight=1)
 
-    sound_buttons.append((filepath, new_button))
+    sound_buttons.append((sound, new_button))
 
 def load_sounds_for_user(frame, style):
     if current_user["name"] is None:
         return
 
-    try:
-        with open(USER_JSON_PATH, "r", encoding="utf-8") as f:
-            users = json.load(f)
-            sound_paths = users[current_user["name"]]["sounds"]
+    sounds = db.load_sounds(current_user["name"])
+    for (sound,) in sounds:
+        create_sound_button(sound, frame, style)
+    if False:
+        try:
+            with open(USER_JSON_PATH, "r", encoding="utf-8") as f:
+                users = json.load(f)
+                sound_paths = users[current_user["name"]]["sounds"]
 
-        for path in sound_paths:
-            abs_path = os.path.join(PROJECT_DIR, path)
-            if os.path.exists(abs_path):
-                create_sound_button(abs_path, frame, style)
-    except Exception as e:
-        print(f"Fehler beim Laden der Sounds: {e}")
+            for path in sound_paths:
+                abs_path = os.path.join(PROJECT_DIR, path)
+                if os.path.exists(abs_path):
+                    create_sound_button(abs_path, frame, style)
+        except Exception as e:
+            print(f"Fehler beim Laden der Sounds: {e}")
 
 def save_sounds_for_user():
-    if current_user["name"] is None:
+    if current_user["id"] is None:
         return
 
-    try:
-        with open(USER_JSON_PATH, "r+", encoding="utf-8") as f:
-            users = json.load(f)
-            users[current_user["name"]]["sounds"] = [os.path.relpath(p, PROJECT_DIR) for p, _ in sound_buttons]
-            f.seek(0)
-            json.dump(users, f, indent=4)
-            f.truncate()
-    except Exception as e:
-        print(f"Fehler beim Speichern der Sounds: {e}")
+    db.save_sounds()
+    if False:
+        try:
+            with open(USER_JSON_PATH, "r+", encoding="utf-8") as f:
+                users = json.load(f)
+                users[current_user["name"]]["sounds"] = [os.path.relpath(p, PROJECT_DIR) for p, _ in sound_buttons]
+                f.seek(0)
+                json.dump(users, f, indent=4)
+                f.truncate()
+        except Exception as e:
+            print(f"Fehler beim Speichern der Sounds: {e}")
 
 def add_sound(frame, style):
     filetypes = (
@@ -106,11 +112,10 @@ def add_sound(frame, style):
         abs_filename = os.path.abspath(filename)
 
         # Duplikate prüfen (immer mit absoluten Pfaden)
-        if any(os.path.samefile(abs_filename, existing_path) for existing_path, _ in sound_buttons):
-            continue
-
-        create_sound_button(abs_filename, frame, style)
-        added_count += 1
+        sound = db.add_sound(abs_filename, current_user["id"])
+        if sound:
+            create_sound_button(sound, frame, style)
+            added_count += 1
 
     if added_count:
         mb.showinfo(title='Sounds hinzugefügt', message=f"{added_count} Sound(s) wurden hinzugefügt.")
@@ -119,15 +124,15 @@ def add_sound(frame, style):
         mb.showinfo("Hinweis", "Alle ausgewählten Sounds sind bereits vorhanden.")
 
 def remove_selected_sound(frame):
-    if selected_sound[0] is None:
+    if selected_sound is None:
         mb.showinfo("Hinweis", "Kein Sound ausgewählt!")
         return
 
     for i, (path, button) in enumerate(sound_buttons):
-        if path == selected_sound[0]:
+        if path == selected_sound:
             button.destroy()
             del sound_buttons[i]
-            selected_sound[0] = None
+            selected_sound = None
             rearrange_buttons(frame)  # Neu anordnen nach Entfernen
             save_sounds_for_user()
             mb.showinfo("Sound entfernt", "Der Sound wurde entfernt.")
@@ -144,11 +149,10 @@ def rearrange_buttons(frame):
         frame.grid_columnconfigure(col, weight=1)
 
 def play_sound():
-    sound_path = selected_sound[0]
-    if sound_path:
+    if selected_sound:
         try:
-            pygame.mixer.music.load(sound_path)
-            pygame.mixer.music.play()
+            sound = pygame.mixer.Sound(selected_sound)
+            sound.play()
         except Exception as e:
             mb.showinfo(title="Fehler", message=f"Konnte Sound nicht abspielen:\n{e}")
     else:
