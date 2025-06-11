@@ -30,12 +30,17 @@ Thumbs.db
 *.pot
 *.mo
 
-# Pygame mixer cache or temp files (falls vorhanden)
+# Pygame mixer cache or temp files
 *.wav~
 *.tmp
 
-# Data / assets you don't want to track
-data/button_sounds.json
+# User sound settings and user data
+sounds/*/sounds.json
+sounds/sounds.json
 
 # Pillow temporary files
 *.icc
+
+# SQL Server local DB files (optional, falls genutzt)
+*.mdf
+*.ldf
