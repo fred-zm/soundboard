@@ -28,3 +28,5 @@ if __name__ == '__main__':
     show_login_window(fenster, sound_manager)
 
     fenster.mainloop()
+
+input()
