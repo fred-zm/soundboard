@@ -1,12 +1,10 @@
 import mysql.connector
-from datetime import datetime
 import json
 import os
-
 from platformdirs import *
+
 def create_connection():
     global my_db
-    print(user_config_dir)
     path = user_config_dir('soundboard','Gruppe-B') + '\\soundboard.ini'
     os.makedirs(os.path.dirname(path), exist_ok=True)
     while True:
@@ -45,9 +43,7 @@ def create_database():
 
 
 def create_tables():
-    # Tabelle 'sounds' definieren
-    # Annahme: 'sounds' benötigt mindestens eine Spalte wie 'id' und einen 'name' oder 'path'.
-    # Bitte passe die Spalten und Datentypen an deine tatsächlichen Anforderungen an.
+    # SOUNDS
     sql_sound_table = """
         USE sounds;
         CREATE TABLE sound (
@@ -60,7 +56,8 @@ def create_tables():
     my_cursor.fetchall()
     try: my_cursor.nextset()
     except : pass
-    # Tabelle 'user' definieren
+
+    # USER
     sql_user_table = """
         USE sounds;
         CREATE TABLE user (
@@ -73,6 +70,8 @@ def create_tables():
     my_cursor.fetchall()
     try: my_cursor.nextset() 
     except: pass
+
+    # USERSOUND
     sql_usersound_table = """
             USE sounds;
             CREATE TABLE usersound (
@@ -88,7 +87,12 @@ def create_tables():
     my_cursor.fetchall()
     try: my_cursor.nextset() 
     except: pass
-    # Änderungen an der Datenbank festschreiben
+
+    # CREATE ADMIN
+    my_cursor.execute("USE sounds;")
+    my_cursor.execute("INSERT IGNORE INTO user (username, password) VALUES ('admin', 'admin')")
+
+    # COMMIT everything
     my_db.commit()
 
 def get_users(username):
@@ -102,11 +106,6 @@ def get_users(username):
         user_dic['password'] = entry[2]
     return user_dic
 
-my_db = None
-create_connection()
-my_cursor = my_db.cursor()
-create_database()
-create_tables()
 
 def add_sound(file_path, user_id):
     with open(file_path, 'rb') as file:
@@ -121,7 +120,7 @@ def add_sound(file_path, user_id):
 
 def load_sounds(user_id):
     my_cursor.execute("use sounds")
-    sql = "SELECT sound_data FROM sound s JOIN usersound us on s.id = us.sound_id WHERE us.user_id = %s"
+    sql = "SELECT sound_data FROM sound s JOIN usersound us ON s.id = us.sound_id WHERE us.user_id = %s"
     my_cursor.execute(sql, (user_id,))
     sounds = []
     for sound in my_cursor.fetchall():
@@ -130,3 +129,9 @@ def load_sounds(user_id):
 
 def save_sounds():
     pass
+
+my_db = None
+create_connection()
+my_cursor = my_db.cursor()
+create_database()
+create_tables()
