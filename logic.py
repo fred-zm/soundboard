@@ -29,7 +29,6 @@ def login_user(username, password, frame, callback):
         callback()
     else:
         mb.showerror("Login fehlgeschlagen", "Falscher Benutzername oder Passwort.")
-        is_logged_in = False
 
 def create_sound_button(filepath, frame, style):
     # Stelle sicher, dass der Pfad absolut ist (zur Sicherheit)
@@ -129,11 +128,20 @@ def remove_selected_sound(frame):
             button.destroy()
             del sound_buttons[i]
             selected_sound[0] = None
+            rearrange_buttons(frame)  # Neu anordnen nach Entfernen
             save_sounds_for_user()
             mb.showinfo("Sound entfernt", "Der Sound wurde entfernt.")
             return
 
     mb.showinfo("Fehler", "Sound konnte nicht gefunden werden.")
+
+def rearrange_buttons(frame):
+    columns_per_row = 4
+    for index, (_, button) in enumerate(sound_buttons):
+        row = index // columns_per_row
+        col = index % columns_per_row
+        button.grid(row=row, column=col, padx=5, pady=5, sticky='ew')
+        frame.grid_columnconfigure(col, weight=1)
 
 def play_sound():
     sound_path = selected_sound[0]

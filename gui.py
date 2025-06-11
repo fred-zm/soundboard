@@ -11,7 +11,12 @@ def build_gui():
     window.resizable(False, False)
 
     # Login Window
+
+    def on_login_close():
+        window.destroy()  # Beendet das gesamte Programm
+
     login = tk.Toplevel(window)
+    login.protocol("WM_DELETE_WINDOW", on_login_close)
     login.geometry('400x200')
     login.attributes('-topmost', 1)
     login.title('Login')
@@ -99,12 +104,12 @@ def build_gui():
 
         # Logo rechts außen (Spalte 5)
         logo_frame = ttk.Frame(lower_frame)
-        logo_frame.grid(row=0, column=5, sticky="e", padx=(10, 10))
+        logo_frame.grid(row=0, column=5, sticky="w", padx=(50, 10))
 
         # Bild laden und skalieren
         try:
             logo_image = Image.open("zlogo.png")  # Bilddateiname hier anpassen
-            logo_image = logo_image.resize((60, 60))  # Größe anpassen
+            logo_image = logo_image.resize((40, 40))  # Größe anpassen
             logo_photo = ImageTk.PhotoImage(logo_image)
 
             logo_label = ttk.Label(logo_frame, image=logo_photo)
