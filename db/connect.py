@@ -33,6 +33,7 @@ def create_database():
         """
     my_cursor.execute(sql)
     my_cursor.fetchall()
+    my_cursor.nextset()
     # my_cursor.close()
 
 
@@ -54,6 +55,7 @@ def create_tables():
     """
     my_cursor.execute(sql_sound_table)
     my_cursor.fetchall()
+    my_cursor.nextset()
     # Tabelle 'user' definieren
     sql_user_table = """
         USE sounds;
@@ -65,6 +67,7 @@ def create_tables():
     """
     my_cursor.execute(sql_user_table)
     my_cursor.fetchall()
+    my_cursor.nextset()
     # Änderungen an der Datenbank festschreiben
     my_db.commit()
     # my_cursor.close()
