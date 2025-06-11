@@ -4,6 +4,8 @@ import pygame
 from tkinter import filedialog as fd, messagebox as mb
 from tkinter import ttk
 
+import connect as db
+
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 USER_JSON_PATH = "users.json"
@@ -20,10 +22,8 @@ def login_user(username, password, frame, callback):
         mb.showerror("Fehler", "Benutzerdaten nicht gefunden.")
         return False
 
-    with open(USER_JSON_PATH, "r", encoding="utf-8") as f:
-        users = json.load(f)
-
-    if username in users and users[username]["password"] == password:
+    users = db.get_users(username)
+    if username in users and users[username] == password:
         current_user["name"] = username
         frame.destroy()
         callback()

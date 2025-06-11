@@ -36,6 +36,13 @@ def build_gui():
         command=lambda: logic.login_user(input_username.get(), input_password.get(), login, start)
     ).grid(row=2, column=1, pady=10)
 
+    
+    login.bind(
+        "<Return>",
+        lambda e: logic.login_user(input_username.get(), input_password.get(), login, start)
+    )
+    input_username.focus()
+
     def start():
         window.deiconify()
 
