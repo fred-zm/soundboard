@@ -3,5 +3,4 @@ Soundboard Zukunftsmotor K17
 Vorraussetzungen:
 
 pygame - pip install pygame
-
-have fun !
+pillow - pip install pillow
