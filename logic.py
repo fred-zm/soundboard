@@ -11,9 +11,34 @@ current_user = {"name": None}
 
 pygame.mixer.init()
 
-# Globale Verwaltung der Buttons und Auswahl
 sound_buttons = []
 selected_sound = [None]
+
+def create_user(username, password):
+    if not username or not password:
+        return False
+
+    if not os.path.exists(USER_JSON_PATH):
+        users = {}
+    else:
+        with open(USER_JSON_PATH, "r", encoding="utf-8") as f:
+            users = json.load(f)
+
+    if username in users:
+        return False
+
+    users[username] = {
+        "password": password,
+        "sounds": []
+    }
+
+    try:
+        with open(USER_JSON_PATH, "w", encoding="utf-8") as f:
+            json.dump(users, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Fehler beim Speichern des neuen Benutzers: {e}")
+        return False
 
 def login_user(username, password, frame, callback):
     if not os.path.exists(USER_JSON_PATH):
@@ -31,9 +56,8 @@ def login_user(username, password, frame, callback):
         mb.showerror("Login fehlgeschlagen", "Falscher Benutzername oder Passwort.")
 
 def create_sound_button(filepath, frame, style):
-    # Stelle sicher, dass der Pfad absolut ist (zur Sicherheit)
     filepath = os.path.abspath(filepath)
-
+    
     button_text = os.path.splitext(os.path.basename(filepath))[0]
 
     def select():
@@ -44,7 +68,6 @@ def create_sound_button(filepath, frame, style):
 
     new_button = ttk.Button(frame, text=button_text, command=select)
 
-    # Rasterposition: nebeneinander, dann neue Zeile
     index = len(sound_buttons)
     columns_per_row = 4
     row = index // columns_per_row
@@ -105,7 +128,6 @@ def add_sound(frame, style):
     for filename in filenames:
         abs_filename = os.path.abspath(filename)
 
-        # Duplikate prüfen (immer mit absoluten Pfaden)
         if any(os.path.samefile(abs_filename, existing_path) for existing_path, _ in sound_buttons):
             continue
 
@@ -113,10 +135,9 @@ def add_sound(frame, style):
         added_count += 1
 
     if added_count:
-        mb.showinfo(title='Sounds hinzugefügt', message=f"{added_count} Sound(s) wurden hinzugefügt.")
         save_sounds_for_user()
     else:
-        mb.showinfo("Hinweis", "Alle ausgewählten Sounds sind bereits vorhanden.")
+        mb.showinfo("Hinweis", "Sound(s) bereits vorhanden.")
 
 def remove_selected_sound(frame):
     if selected_sound[0] is None:
@@ -128,9 +149,8 @@ def remove_selected_sound(frame):
             button.destroy()
             del sound_buttons[i]
             selected_sound[0] = None
-            rearrange_buttons(frame)  # Neu anordnen nach Entfernen
+            rearrange_buttons(frame)
             save_sounds_for_user()
-            mb.showinfo("Sound entfernt", "Der Sound wurde entfernt.")
             return
 
     mb.showinfo("Fehler", "Sound konnte nicht gefunden werden.")
