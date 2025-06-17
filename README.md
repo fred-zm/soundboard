@@ -1,8 +1,5 @@
 Soundboard Zukunftsmotor K17
+See requirements.txt for required packages
 
-Vorraussetzungen:
-
-pygame - pip install pygame
-
-have fun !
-test
+Install them via pip:
+pip install -r requirements.txt
